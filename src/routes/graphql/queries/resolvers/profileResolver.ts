@@ -1,12 +1,12 @@
 import { GraphQLList, GraphQLNonNull } from "graphql";
 import { ProfileType } from "../../types/profile.js";
 import { UUIDType } from "../../types/uuid.js";
-import prisma from "../../prisma.js";
+import { Context } from "../../context.js";
 
 export const profileResolver = {
     profiles: {
         type: new GraphQLList(ProfileType),
-        resolve: async () => {
+        resolve: async (_parent, _args, { prisma }: Context) => {
             try {
                 return await prisma.profile.findMany();
             } catch (error) {
@@ -19,7 +19,7 @@ export const profileResolver = {
         args: {
             id: { type: new GraphQLNonNull(UUIDType) },
         },
-        resolve: async (_, { id }) => {
+        resolve: async (_parent, { id }, { prisma }: Context) => {
             try {
                 return await prisma.profile.findUnique({
                     where: { id },

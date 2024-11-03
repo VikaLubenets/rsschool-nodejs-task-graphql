@@ -1,11 +1,11 @@
 import { GraphQLList, GraphQLNonNull } from "graphql";
 import { MemberType, MemberTypeIdEnum } from "../../types/memberType.js";
-import prisma from "../../prisma.js";
+import { Context } from "../../context.js";
 
 export const memberTypeResolver = {
     memberTypes: {
         type: new GraphQLList(MemberType),
-        resolve: async () => {
+        resolve: async (_parent, _args, { prisma }: Context) => {
             try {
                 return await prisma.memberType.findMany();
             } catch (error) {
@@ -18,7 +18,7 @@ export const memberTypeResolver = {
         args: {
             id: { type: new GraphQLNonNull(MemberTypeIdEnum) },
         },
-        resolve: async (_, { id }) => {
+        resolve: async (_parent, { id }, { prisma }: Context) => {
             try {
                 return await prisma.memberType.findUnique({
                     where: { id },
