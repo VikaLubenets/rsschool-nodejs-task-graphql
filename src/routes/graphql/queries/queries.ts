@@ -1,16 +1,15 @@
-import  {
-    GraphQLSchema,
-    GraphQLObjectType,
-    GraphQLInt,
-    GraphQLString,
-    GraphQLFloat,
-    GraphQLList,
-} from "graphql";
-import { UserType } from "../types/user.js";
+import  { GraphQLObjectType } from "graphql";
+import { userResolver } from "./resolvers/userResolver.js";
+import { profileResolver } from "./resolvers/profileResolver.js";
+import { postResolver } from "./resolvers/postResolver.js";
+import { memberTypeResolver } from "./resolvers/memberTypesResolver.js";
 
-export const Queries = new GraphQLObjectType({
-  name: "QueryType",
+export const RootQueryType = new GraphQLObjectType({
+  name: "RootQueryType",
   fields: {
-    //
+    ...userResolver,
+    ...profileResolver,
+    ...postResolver,
+    ...memberTypeResolver
   },
 });
