@@ -1,4 +1,4 @@
-import { GraphQLNonNull, GraphQLBoolean } from 'graphql';
+import { GraphQLNonNull, GraphQLBoolean, GraphQLString } from 'graphql';
 import { UUIDType } from '../../types/uuid.js';
 import { ChangeUserInputType, CreateUserInputType, UserType } from '../../types/user.js';
 import { Context } from '../../context.js';
@@ -18,7 +18,7 @@ export const UserMutation = {
   },
 
   deleteUser: {
-    type: GraphQLBoolean,
+    type: new GraphQLNonNull(GraphQLString),
     args: {
       id: { type: new GraphQLNonNull(UUIDType) },
     },
@@ -27,7 +27,7 @@ export const UserMutation = {
           where: { id },
       });
 
-      return "User has been deleted";
+      return 'done';
   },
   },
 
@@ -48,24 +48,24 @@ export const UserMutation = {
   },
 
   subscribeTo: {
-    type: UserType,
+    type: new GraphQLNonNull(GraphQLString),
     args: {
       userId: { type: new GraphQLNonNull(UUIDType) },
       authorId: { type: new GraphQLNonNull(UUIDType) },
     },
-    async resolve(_parent, { userId, authorId }, { prisma }: Context) {
+    async resolve (_parent, { userId, authorId }, { prisma }: Context) {
       const subscription = await prisma.subscribersOnAuthors.create({
-          data: {
-              subscriberId: userId,
-              authorId: authorId,
-          },
+        data: { 
+          subscriberId: userId, 
+          authorId: authorId 
+        },
       });
-      return subscription
+      return 'done';
     },
   },
 
   unsubscribeFrom: {
-    type: GraphQLBoolean,
+    type: new GraphQLNonNull(GraphQLString),
     args: {
       userId: { type: new GraphQLNonNull(UUIDType) },
       authorId: { type: new GraphQLNonNull(UUIDType) },
@@ -75,7 +75,7 @@ export const UserMutation = {
       { userId, authorId }: { userId: string; authorId: string },
       { prisma }: Context,
     ) {
-      await prisma.subscribersOnAuthors.delete({
+     await prisma.subscribersOnAuthors.delete({
         where: {
           subscriberId_authorId: {
             subscriberId: userId,
@@ -83,7 +83,7 @@ export const UserMutation = {
           },
         },
       });
-      return true;
+      return 'done'
     },
   },
 };

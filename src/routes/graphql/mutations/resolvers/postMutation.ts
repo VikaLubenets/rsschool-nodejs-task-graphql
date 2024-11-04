@@ -1,4 +1,4 @@
-import { GraphQLNonNull, GraphQLBoolean } from 'graphql';
+import { GraphQLNonNull, GraphQLBoolean, GraphQLString } from 'graphql';
 import { UUIDType } from '../../types/uuid.js';
 import { ChangePostInputType, CreatePostInputType, PostType } from '../../types/post.js';
 import { Context } from '../../context.js';
@@ -10,14 +10,15 @@ export const PostMutation = {
       dto: { type: new GraphQLNonNull(CreatePostInputType) },
     },
     async resolve(_parent, { dto }, { prisma }: Context) {
-      return await prisma.post.create({
+      const newPost = await prisma.post.create({
         data: dto,
       });
+      return newPost
     },
   },
 
   deletePost: {
-    type: GraphQLBoolean,
+    type: new GraphQLNonNull(GraphQLString),
     args: {
       id: { type: new GraphQLNonNull(UUIDType) },
     },
@@ -26,7 +27,7 @@ export const PostMutation = {
         where: { id },
       });
 
-      return "Post has been deleted";
+      return 'done';
     },
   },
 
@@ -37,10 +38,11 @@ export const PostMutation = {
       dto: { type: new GraphQLNonNull(ChangePostInputType) },
     },
     async resolve(_parent, { id, dto }, { prisma }: Context) {
-      return await prisma.post.update({
+      const updatedPost = await prisma.post.update({
         where: { id },
         data: dto,
       });
+      return updatedPost
     },
   },
 }; 

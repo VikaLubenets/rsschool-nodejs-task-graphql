@@ -1,4 +1,4 @@
-import { GraphQLNonNull, GraphQLBoolean } from 'graphql';
+import { GraphQLNonNull, GraphQLBoolean, GraphQLString } from 'graphql';
 import { UUIDType } from '../../types/uuid.js';
 import { ChangeProfileInputType, CreateProfileInputType, ProfileType } from '../../types/profile.js';
 import { Context } from '../../context.js';
@@ -10,14 +10,15 @@ export const ProfileMutation = {
       dto: { type: new GraphQLNonNull(CreateProfileInputType) },
     },
     async resolve(_parent, { dto }, { prisma }: Context) {
-      return await prisma.profile.create({
+      const newProfile = await prisma.profile.create({
           data: dto,
       });
+      return newProfile
   },
   },
 
   deleteProfile: {
-    type: GraphQLBoolean,
+    type: new GraphQLNonNull(GraphQLString),
     args: {
       id: { type: new GraphQLNonNull(UUIDType) },
     },
@@ -26,7 +27,7 @@ export const ProfileMutation = {
           where: { id },
       });
 
-      return "Profile has been deleted";
+      return 'done';
   },
   },
 
@@ -37,10 +38,11 @@ export const ProfileMutation = {
       dto: { type: new GraphQLNonNull(ChangeProfileInputType) },
     },
     async resolve(_parent, { id, dto }, { prisma }: Context) {
-      return await prisma.profile.update({
+      const updatedProfile = await prisma.profile.update({
           where: { id },
           data: dto,
       });
+      return updatedProfile
   },
   },
 };
