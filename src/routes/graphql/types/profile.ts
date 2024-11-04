@@ -1,24 +1,39 @@
-import { GraphQLObjectType, GraphQLString, GraphQLBoolean, GraphQLInt } from 'graphql';
+import { GraphQLObjectType, GraphQLString, GraphQLBoolean, GraphQLInt, GraphQLInputObjectType, GraphQLNonNull } from 'graphql';
 import { UUIDType } from './uuid.js';
-import { MemberType, MemberTypeIdEnum } from './memberType.js';
+import { MemberType, MemberTypeId } from './memberType.js';
 import { Profile } from '@prisma/client';
 import { Context } from '../context.js';
 
 export const ProfileType = new GraphQLObjectType({
   name: "Profile",
   fields: () => ({
-    id: { type: UUIDType },
-    isMale: { type: GraphQLBoolean },
-    yearOfBirth: { type: GraphQLInt },
-    userId: { type: UUIDType }, 
-    memberTypeId: { type: MemberTypeIdEnum }, 
+    id: { type: new GraphQLNonNull(UUIDType) },
+    isMale: { type: new GraphQLNonNull(GraphQLBoolean) },
+    yearOfBirth: { type: new GraphQLNonNull(GraphQLInt) },
     memberType: {
-      type: MemberType,
-      resolve: async (parent: Profile, _args, { prisma }: Context) => {
-        return await prisma.memberType.findUnique({
-          where: { id: parent.id },
-        });
+      type: new GraphQLNonNull(MemberType),
+      resolve: async (_parent: Profile, _args, { prisma }: Context) => {
+        return await prisma.memberType.findUnique({ where: { id: _parent.memberTypeId } });
       },
     },
+  }),
+});
+
+export const CreateProfileInputType = new GraphQLInputObjectType({
+  name: 'CreateProfileInput',
+  fields: () => ({
+    isMale: { type: new GraphQLNonNull(GraphQLBoolean) },
+    yearOfBirth: { type: new GraphQLNonNull(GraphQLInt) },
+    userId: { type: new GraphQLNonNull(UUIDType) },
+    memberTypeId: { type: new GraphQLNonNull(MemberTypeId) },
+  }),
+});
+
+export const ChangeProfileInputType = new GraphQLInputObjectType({
+  name: 'ChangeProfileInput',
+  fields: () => ({
+    isMale: { type: GraphQLBoolean },
+    yearOfBirth: { type: GraphQLInt },
+    memberTypeId: { type: MemberTypeId },
   }),
 });

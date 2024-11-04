@@ -17,11 +17,11 @@ const plugin: FastifyPluginAsyncTypebox = async (fastify) => {
     },
     async handler(req) {
       const { query, variables } = req.body;
-      const validationResults = validate(graphqlSchema, parse(query), [depthLimit(5)]);
+      const validation = validate(graphqlSchema, parse(query), [depthLimit(5)]);
 
-      if (validationResults.length) {
+      if (validation.length) {
         return {
-          errors: validationResults,
+          errors: validation,
         };
       }
 
