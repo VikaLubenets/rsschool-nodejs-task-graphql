@@ -7,11 +7,8 @@ export const userResolver = {
     users: {
         type: new GraphQLList(UserType),
         resolve: async (_parent, _args, { prisma }: Context) => {
-            try {
-                return await prisma.user.findMany();
-            } catch (error) {
-                console.error("Error fetching users:", error);
-            }
+            const data = await prisma.user.findMany();
+            return data;
         },
     },
     user: {
@@ -20,13 +17,10 @@ export const userResolver = {
             id: { type: new GraphQLNonNull(UUIDType) },
         },
         resolve: async (_parent, { id }, { prisma }: Context) => {
-            try {
-                return await prisma.user.findUnique({
+            const data = await prisma.user.findUnique({
                     where: { id },
                 });
-            } catch (error) {
-                console.error("Error fetching user:", error);
-            }
+            return data
         },
     },
 };

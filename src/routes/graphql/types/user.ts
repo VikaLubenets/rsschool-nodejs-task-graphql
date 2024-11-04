@@ -12,7 +12,7 @@ export const UserType = new GraphQLObjectType({
     name: { type: GraphQLString },
     balance: { type: GraphQLFloat },
     posts: {
-      type: new GraphQLList(new GraphQLNonNull(PostType)),
+      type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(PostType))),
       resolve: async (parent: User, _args, { prisma }: Context) => {
         return await prisma.post.findMany({
           where: { authorId: parent.id },
@@ -28,7 +28,7 @@ export const UserType = new GraphQLObjectType({
       },
     },
     userSubscribedTo: {
-      type: new GraphQLList(new GraphQLNonNull(UserType)),
+      type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(UserType))),
       resolve: async (parent: User, _args, { prisma }: Context) => {
         const subscriptions = await prisma.subscribersOnAuthors.findMany({
           where: { subscriberId: parent.id },
@@ -38,7 +38,7 @@ export const UserType = new GraphQLObjectType({
       },
     },
     subscribedToUser: {
-      type: new GraphQLList(new GraphQLNonNull(UserType)),
+      type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(UserType))),
       resolve: async (parent: User, _args, { prisma }: Context) => {
         const subscriptions = await prisma.subscribersOnAuthors.findMany({
           where: { authorId: parent.id },
