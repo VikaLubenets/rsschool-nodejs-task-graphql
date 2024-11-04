@@ -7,7 +7,8 @@ export const postResolver = {
     posts: {
         type: new GraphQLList(PostType),
         resolve: async (_parent, _args, { prisma }: Context) => {
-            return await prisma.post.findMany();
+            const posts = await prisma.post.findMany();
+            return posts
         },
     },
     post: {
@@ -16,9 +17,10 @@ export const postResolver = {
             id: { type: new GraphQLNonNull(UUIDType) },
         },
         resolve: async (_parent, { id }, { prisma }: Context) => {
-            return await prisma.profile.findUnique({
-                    where: { id },
+            const post = await prisma.post.findUnique({
+                where: { id },
             });
+            return post
         },
     },
 }

@@ -10,9 +10,10 @@ export const UserMutation = {
       dto: { type: new GraphQLNonNull(CreateUserInputType) },
     },
     async resolve(_parent, { dto }, { prisma }) {
-      return prisma.user.create({
+      const newUser = await prisma.user.create({
           data: dto,
       });
+      return newUser
   },
   },
 
@@ -37,10 +38,12 @@ export const UserMutation = {
       dto: { type: new GraphQLNonNull(ChangeUserInputType) },
     },
     async resolve(_parent, { id, dto }, { prisma }: Context) {
-      return prisma.user.update({
+      const updatedUser = await prisma.user.update({
           where: { id },
           data: dto,
       });
+
+      return updatedUser
   },
   },
 
@@ -51,13 +54,13 @@ export const UserMutation = {
       authorId: { type: new GraphQLNonNull(UUIDType) },
     },
     async resolve(_parent, { userId, authorId }, { prisma }: Context) {
-      await prisma.subscribersOnAuthors.create({
+      const subscription = await prisma.subscribersOnAuthors.create({
           data: {
               subscriberId: userId,
               authorId: authorId,
           },
       });
-      return "Subscription has been created";
+      return subscription
     },
   },
 

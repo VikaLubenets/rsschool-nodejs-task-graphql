@@ -10,7 +10,7 @@ export const PostMutation = {
       dto: { type: new GraphQLNonNull(CreatePostInputType) },
     },
     async resolve(_parent, { dto }, { prisma }: Context) {
-      return prisma.post.create({
+      return await prisma.post.create({
         data: dto,
       });
     },
@@ -37,7 +37,7 @@ export const PostMutation = {
       dto: { type: new GraphQLNonNull(ChangePostInputType) },
     },
     async resolve(_parent, { id, dto }, { prisma }: Context) {
-      return prisma.post.update({
+      return await prisma.post.update({
         where: { id },
         data: dto,
       });

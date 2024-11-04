@@ -6,7 +6,8 @@ export const memberTypeResolver = {
     memberTypes: {
         type: new GraphQLList(MemberType),
         resolve: async (_parent, _args, { prisma }: Context) => {
-            return await prisma.memberType.findMany();
+            const data = await prisma.memberType.findMany();
+            return data
         },
     },
     memberType: {
@@ -15,9 +16,10 @@ export const memberTypeResolver = {
             id: { type: new GraphQLNonNull(MemberTypeId) },
         },
         resolve: async (_parent, { id }: {id: string}, { prisma }: Context) => {
-            return await prisma.memberType.findUnique({
+            const data = await prisma.memberType.findUnique({
                     where: { id },
                 });
+            return data
         },
     },
 

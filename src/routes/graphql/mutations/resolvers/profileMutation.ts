@@ -10,7 +10,7 @@ export const ProfileMutation = {
       dto: { type: new GraphQLNonNull(CreateProfileInputType) },
     },
     async resolve(_parent, { dto }, { prisma }: Context) {
-      return prisma.profile.create({
+      return await prisma.profile.create({
           data: dto,
       });
   },
@@ -37,7 +37,7 @@ export const ProfileMutation = {
       dto: { type: new GraphQLNonNull(ChangeProfileInputType) },
     },
     async resolve(_parent, { id, dto }, { prisma }: Context) {
-      return prisma.profile.update({
+      return await prisma.profile.update({
           where: { id },
           data: dto,
       });

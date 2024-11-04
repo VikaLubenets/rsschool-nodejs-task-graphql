@@ -7,7 +7,8 @@ export const profileResolver = {
     profiles: {
         type: new GraphQLList(ProfileType),
         resolve: async (_parent, _args, { prisma }: Context) => {
-            return await prisma.profile.findMany();
+            const profiles = await prisma.profile.findMany();
+            return profiles
         },
     },
     profile: {
@@ -16,9 +17,10 @@ export const profileResolver = {
             id: { type: new GraphQLNonNull(UUIDType) },
         },
         resolve: async (_parent, { id }, { prisma }: Context) => {
-            return await prisma.profile.findUnique({
+            const profile = await prisma.profile.findUnique({
                     where: { id },
                 });
+            return profile
         },
     },
 
